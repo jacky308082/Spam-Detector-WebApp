@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel='stylesheet' type='text/css' href='../static/style.css'>
+</head>
+<body>
+
+	<header>
+		<div class='container'>
+		<div id='brandname'>
+			ML App
+		</div>
+		<h2>Spam Detector For SMS Messages</h2>
+
+	</div>
+	</header>
+
+	<h3>Your email classification</h3>
+	<div>{{content}}
+	<p style='color:blue; font-size:20; text-align: center;'>
+		<b>Results for comment</b>
+		<div>The email is <strong>{{prediction}}</strong>
+			(probability: {{probability}})</div>
+	</p>
+
+	<div id='button'>
+		<form action='/thanks' method='POST'>
+			<input type=submit value='Correct' name='feedback_button'>
+			<input type=submit value='Incorrect' name='feedback_button'>
+			<input type=hidden value='{{prediction}}' name='prediction'>
+			<input type=hidden value='{{content}}' name='review'>
+		</form>
+	</div>
+	
+	<div id='button'>
+		<form action='/'>
+			<input type=submit value='Submit another review'>
+		</form>
+	</div>
+
+</body>
+</html>

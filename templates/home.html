@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Home</title>
+	<!-- <link rel='stylesheet' type='text/css' href='../static/css/style.css' -->
+	<link rel='stylesheet' type='text/css' href="../static/style.css"> 
+</head>
+	<body>
+
+<header>
+	<div class='container'>
+	<div id='brandname'>
+		Machine Learning App with Flask
+	</div>
+	<h2>Spam Detector For SMS Messages</h2>
+	</div>
+</header>
+
+{% from "_formhelpers.html" import render_field %}
+
+<form action="{{url_for('results')}}" method="POST">
+	<dl>
+		{{render_field(form.spanclassifier, cols='30', rows='10')}}
+	</dl>
+	<div>
+		<input type=submit value='Submit review' name='submit_btn'>
+	</div>	
+
+</form>
+		
+</body>
+</html>
