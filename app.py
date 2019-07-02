@@ -26,17 +26,28 @@ cv = pickle.load(open(os.path.join(cur_dir, 'pickle_model/countvectorizer.pkl'),
 db = os.path.join(cur_dir, 'spam_classification.sqlite')
 
 def predict(document):
+	"""
+	利用已經建好的模型來預測輸入的資料
+	"""
 	label = {0: 'not spam', 1: 'spam'}
+	# 將其轉成矩陣
 	X = cv.transform([document])
 	y = clf.predict(X)
+	# 預測機率
 	proba = np.max(clf.predict_proba(X))
 	return label[int(y)], y, proba
 
 def train(document, y):
+	"""
+	重新訓練模型
+	"""
 	X = cv.transform([document])
 	clf.partial_fit(X, [y])
 
 def sqlite_entry(path, document, y):
+	"""
+	將資料存入sqlite資料庫當中
+	"""
 	conn = sqlite3.connect(path)
 	c = conn.cursor()
 	c.execute('INSERT INTO spam_db (message, label) VALUES (?, ?)', (document, y))
@@ -45,15 +56,21 @@ def sqlite_entry(path, document, y):
 
 
 class ReviewForm(Form):
-	spanclassifier = TextAreaField('', [validators.DataRequired(), validators.length(min=15)])
+	"""
+	建立表單，使得request.form有spanclassifier的method
+	"""
+	spanclassifier = TextAreaField('', [validators.DataRequired(), validators.length(min=15)]) # validators.DataRequired()為必須含有資料
 
 """
 decorator用來指定應該觸發home函數執行的url
 @app.route('/') 為路徑修飾器，當遇到這個url時，會觸發route這個函數
 """
-@app.route('/') # 主頁面
+@app.route('/', methods=['GET']) # 主頁面
 def home():
-	form = ReviewForm(request.form)
+	"""
+	request.form來訪問表單數據，post提交的數據，有出現的就可以使用在html的name裡面
+	"""
+	form = ReviewForm(request.form) # 建立起表達，確認使否符合格式 並納入request.form的其中一個method裡
 	return render_template('home.html', form=form)
 
 """
@@ -61,6 +78,7 @@ def home():
 """
 @app.route('/predict', methods=['POST'])
 def results():
+	# 得到post而來的資料
 	form = ReviewForm(request.form)
 	if request.method == 'POST':
 		message = request.form['spanclassifier']
@@ -70,6 +88,9 @@ def results():
 
 @app.route('/thanks', methods=['POST'])
 def feedback():
+	"""
+	有在result.html的form表單中的name使用 得到來自result.html傳來的request.form
+	"""
 	feedback = request.form['feedback_button']
 	review = request.form['review']
 	prediction = request.form['prediction']
