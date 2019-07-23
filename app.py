@@ -4,26 +4,36 @@
 """
 
 # render_template讓flask可以渲染於網路瀏覽器中
-from flask import Flask, render_template, url_for, request
+from flask import Flask, jsonify, render_template, url_for, request
 # Form形成表單， TextAreaField建立填空欄， validators 驗證表單內容是否符合格式
-from wtforms import Form, TextAreaField, validators 
+from wtforms import Form, TextAreaField, validators
+from flask_restful import Api, Resource 
 import os
 import pandas as pd
 import numpy as np
 import sqlite3
 import pickle
-from update import update_model
+#from update import update_model
+from dbModel import *
+from datetime import datetime
 
 """
 使用__name__可以讓flask知道它可以在同一個目錄底下，找到html模板的文件夾
+決定程式的根目錄
 """
 app = Flask(__name__)
+api = Api(app)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost/app'
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db.init_app(app)
 
 # 準備model
 cur_dir = os.path.dirname(__file__)
 clf = pickle.load(open(os.path.join(cur_dir, 'pickle_model/classifier.pkl'), 'rb'))
 cv = pickle.load(open(os.path.join(cur_dir, 'pickle_model/countvectorizer.pkl'), 'rb'))
-db = os.path.join(cur_dir, 'spam_classification.sqlite')
+#db = os.path.join(cur_dir, 'spam_classification.sqlite')
 
 def predict(document):
 	"""
@@ -44,16 +54,13 @@ def train(document, y):
 	X = cv.transform([document])
 	clf.partial_fit(X, [y])
 
-def sqlite_entry(path, document, y):
+def db_entry(true_result, document):
 	"""
 	將資料存入sqlite資料庫當中
 	"""
-	conn = sqlite3.connect(path)
-	c = conn.cursor()
-	c.execute('INSERT INTO spam_db (message, label) VALUES (?, ?)', (document, y))
-	conn.commit()
-	conn.close()
-
+	add_data = resultData(document=document, result=true_result, createDate=datetime.now())
+	db.session.add(add_data)
+	db.session.commit()
 
 class ReviewForm(Form):
 	"""
@@ -62,6 +69,7 @@ class ReviewForm(Form):
 	spanclassifier = TextAreaField('', [validators.DataRequired(), validators.length(min=15)]) # validators.DataRequired()為必須含有資料
 
 """
+web browser -> request -> web server -> request -> flask
 decorator用來指定應該觸發home函數執行的url
 @app.route('/') 為路徑修飾器，當遇到這個url時，會觸發route這個函數
 """
@@ -100,12 +108,32 @@ def feedback():
 	if feedback == 'Incorrect':
 		y = int(not(y))
 	train(review, y)
-	sqlite_entry(db, review, y)
+	db_entry(prediction, review)
 	return render_template('thanks.html')
 
+class apiPredict(Resource):
+	"""
+	建立api返回predict的結果
+	"""
+	def post(self):
+		postedData = request.get_json()
+
+		x = postedData['Document']
+		result, y, proba = predict(x)
+		retJson = {
+			'data': x,
+			'result_proba': '{}: {}'.format(result, proba)
+		}
+
+		db_entry(result, x)
+		return jsonify(retJson)
+
+api.add_resource(apiPredict, '/api/predict')
+
 """
+__name__ == '__main__' 確保直接執行script才啟動web server、
 在app.run中設置debug=True進而激活了flask的調試器
 run在服務器上運行程序
 """
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(host='0.0.0.0')
