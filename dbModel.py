@@ -21,10 +21,7 @@ class resultData(db.Model):
 
 if __name__ == "__main__": 
 	app = Flask(__name__)
-	if os.environ.get('DATABASE_URL') is None:
-		app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gsauxupdtlrdxw:570b63e6418005cb3a9df34e84edf0044136a57b1b3705847d29a33415ff734c@ec2-54-243-208-234.compute-1.amazonaws.com:5432/d2od04jmuld6tc'
-	else:
-		app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+	app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gsauxupdtlrdxw:570b63e6418005cb3a9df34e84edf0044136a57b1b3705847d29a33415ff734c@ec2-54-243-208-234.compute-1.amazonaws.com:5432/d2od04jmuld6tc'
 	app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 	db = SQLAlchemy(app)
