@@ -8,4 +8,4 @@ flask_restful
 flask_sqlalchemy
 flask_script
 flask_migrate
-psycopg2
+psycopg2-binary
