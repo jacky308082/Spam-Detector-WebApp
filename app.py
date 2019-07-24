@@ -51,7 +51,6 @@ def train(document, y):
 	X = cv.transform([document])
 	clf.partial_fit(X, [y])
 
-from dbModel import resultdata
 def db_entry(true_result, document):
 	"""
 	將資料存入sqlite資料庫當中
