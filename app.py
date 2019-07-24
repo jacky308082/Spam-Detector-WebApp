@@ -14,7 +14,7 @@ import numpy as np
 import sqlite3
 import pickle
 #from update import update_model
-from dbModel import *
+from dbModel import db
 from datetime import datetime
 
 """
@@ -24,10 +24,7 @@ from datetime import datetime
 app = Flask(__name__)
 api = Api(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gsauxupdtlrdxw:570b63e6418005cb3a9df34e84edf0044136a57b1b3705847d29a33415ff734c@ec2-54-243-208-234.compute-1.amazonaws.com:5432/d2od04jmuld6tc'
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-db.init_app(app)
+db.create_all()
 
 # 準備model
 cur_dir = os.path.dirname(__file__)
@@ -54,6 +51,7 @@ def train(document, y):
 	X = cv.transform([document])
 	clf.partial_fit(X, [y])
 
+from dbModel import resultdata
 def db_entry(true_result, document):
 	"""
 	將資料存入sqlite資料庫當中
