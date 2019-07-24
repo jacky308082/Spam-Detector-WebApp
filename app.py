@@ -136,4 +136,4 @@ __name__ == '__main__' 確保直接執行script才啟動web server、
 run在服務器上運行程序
 """
 if __name__ == '__main__':
-	app.run(host='0.0.0.0')
+	app.run(debug=True)
