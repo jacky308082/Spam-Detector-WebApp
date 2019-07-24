@@ -6,7 +6,7 @@ from flask_migrate import Migrate, MigrateCommand
 db = SQLAlchemy()
 
 class resultData(db.Model):
-	__tablename__ = 'db'
+	__tablename__ = 'resultData'
 
 	Id = db.Column(db.Integer, primary_key=True)
 	document = db.Column(db.String(256))
