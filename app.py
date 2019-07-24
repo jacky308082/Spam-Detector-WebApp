@@ -14,7 +14,7 @@ import numpy as np
 import sqlite3
 import pickle
 #from update import update_model
-from dbModel import db, resultData
+from dbModel import *
 from datetime import datetime
 
 """
@@ -26,7 +26,7 @@ api = Api(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gsauxupdtlrdxw:570b63e6418005cb3a9df34e84edf0044136a57b1b3705847d29a33415ff734c@ec2-54-243-208-234.compute-1.amazonaws.com:5432/d2od04jmuld6tc'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-db.create_all()
+db.init_app(app)
 
 # 準備model
 cur_dir = os.path.dirname(__file__)
