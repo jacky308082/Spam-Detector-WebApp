@@ -27,6 +27,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gsauxupdtlrdxw:570b63e641800
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
+db.create_all()
 
 # 準備model
 cur_dir = os.path.dirname(__file__)
