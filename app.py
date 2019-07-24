@@ -14,9 +14,8 @@ import numpy as np
 import sqlite3
 import pickle
 #from update import update_model
+from dbModel import *
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
-
 
 """
 使用__name__可以讓flask知道它可以在同一個目錄底下，找到html模板的文件夾
@@ -24,10 +23,11 @@ from flask_sqlalchemy import SQLAlchemy
 """
 app = Flask(__name__)
 api = Api(app)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gsauxupdtlrdxw:570b63e6418005cb3a9df34e84edf0044136a57b1b3705847d29a33415ff734c@ec2-54-243-208-234.compute-1.amazonaws.com:5432/d2od04jmuld6tc'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-db = SQLAlchemy(app)
+db.init_app(app)
 
 # 準備model
 cur_dir = os.path.dirname(__file__)
@@ -53,8 +53,6 @@ def train(document, y):
 	"""
 	X = cv.transform([document])
 	clf.partial_fit(X, [y])
-
-from dbModel import *
 
 def db_entry(true_result, document):
 	"""
