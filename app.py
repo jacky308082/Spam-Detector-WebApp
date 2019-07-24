@@ -14,7 +14,7 @@ import numpy as np
 import sqlite3
 import pickle
 #from update import update_model
-from dbModel import db
+from dbModel import db, resultData
 from datetime import datetime
 
 """
