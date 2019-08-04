@@ -23,16 +23,24 @@ from datetime import datetime
 """
 app = Flask(__name__)
 api = Api(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gsauxupdtlrdxw:570b63e6418005cb3a9df34e84edf0044136a57b1b3705847d29a33415ff734c@ec2-54-243-208-234.compute-1.amazonaws.com:5432/d2od04jmuld6tc'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://qsjomqlqepfebu:ca900482b474c7141efa487c1d46a1183e08c2d50933e386f9d5df887fe6fb4a@ec2-107-20-185-16.compute-1.amazonaws.com:5432/d4qdnqvkfmbfnd'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# 在db裡面 加載app的配置
 db.init_app(app)
+"""
+表示根據上下文的環境來建立
+必須在應用上下文裡才能使用 創立上下文對象
+要不然create_all會返錯
+db.create_all()對象不是全局的，必須指定在app_context下才能使用
+"""
 with app.app_context():
+	# 會創建在db.Model裡的所有列表
     db.create_all()
 
 # 準備model
 cur_dir = os.path.dirname(__file__)
-clf = pickle.load(open(os.path.join(cur_dir, 'pickle_model/classifier.pkl'), 'rb'))
+clf = pickle.load(open(os.path.join(cur_dir, 'picke_model/classifier.pkl'), 'rb'))
 cv = pickle.load(open(os.path.join(cur_dir, 'pickle_model/countvectorizer.pkl'), 'rb'))
 #db = os.path.join(cur_dir, 'spam_classification.sqlite')
 
