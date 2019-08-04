@@ -40,7 +40,7 @@ with app.app_context():
 
 # 準備model
 cur_dir = os.path.dirname(__file__)
-clf = pickle.load(open(os.path.join(cur_dir, 'picke_model/classifier.pkl'), 'rb'))
+clf = pickle.load(open(os.path.join(cur_dir, 'pickle_model/classifier.pkl'), 'rb'))
 cv = pickle.load(open(os.path.join(cur_dir, 'pickle_model/countvectorizer.pkl'), 'rb'))
 #db = os.path.join(cur_dir, 'spam_classification.sqlite')
 
