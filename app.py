@@ -23,7 +23,7 @@ from datetime import datetime
 """
 app = Flask(__name__)
 api = Api(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://qsjomqlqepfebu:ca900482b474c7141efa487c1d46a1183e08c2d50933e386f9d5df887fe6fb4a@ec2-107-20-185-16.compute-1.amazonaws.com:5432/d4qdnqvkfmbfnd'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'Your Password'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # 在db裡面 加載app的配置
